@@ -69,16 +69,21 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ghcr.io/${{ github.repository }}:latest .
+          REPO_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2 | tr '[:upper:]' '[:lower:]')
+          IMAGE_REPO="ghcr.io/${REPO_OWNER}/${REPO_NAME}"
+          docker build -t ${IMAGE_REPO}:latest .
           git fetch --tags
           export TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
-          docker tag ghcr.io/${{ github.repository }}:latest ghcr.io/${{ github.repository }}:${TAG}
+          docker tag ${IMAGE_REPO}:latest ${IMAGE_REPO}:${TAG}
+          echo "IMAGE_REPO=${IMAGE_REPO}" >> $GITHUB_ENV
 
       - name: Push Docker image (latest)
-        run: docker push ghcr.io/${{ github.repository }}:latest
+        run: |
+          docker push $IMAGE_REPO:latest
 
       - name: Push Docker image (tag)
         run: |
           git fetch --tags
           export TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
-          docker push ghcr.io/${{ github.repository }}:${TAG}
+          docker push $IMAGE_REPO:${TAG}
