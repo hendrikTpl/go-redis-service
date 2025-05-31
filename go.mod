@@ -1,6 +1,6 @@
 module github.com/redis-developer/redis-starter-go
 
-go 1.22
+go 1.23.0
 
 // toolchain go1.23
 
