@@ -1,8 +1,8 @@
 module github.com/redis-developer/redis-starter-go
 
-go 1.23
+go 1.22
 
-toolchain go1.23
+// toolchain go1.23
 
 require (
 	github.com/google/uuid v1.6.0
